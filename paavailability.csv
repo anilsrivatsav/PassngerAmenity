@@ -1,0 +1,6 @@
+Station_Code,Station_Name,Category,drinking_water_taps_count,waiting_hall_area,seating_capacity,platform_shelter_area,urinals_count,urinals_auto_flush,latrines_count,latrines_auto_flush,platform_level,lighting_status,fans_count,foot_over_bridge_count,foot_over_bridge_cover,time_table_display,clock_available,water_cooler_count,public_address_system,parking_area_available,train_indicator_available,signage_available,dustbins_count
+AEK,Anekal Road,NSG6,1,10,8,40,1,0,1,0,High Level,Yes,4,1,0,Yes,Yes,1,Yes,No,No,Yes,4
+YPR,Yesvantpur Jn,NSG1,18,240,140,480,10,1,10,1,High Level,Yes,24,2,1,Yes,Yes,6,Yes,Yes,Yes,Yes,20
+SBC,Bangalore City,NSG1,20,260,160,520,12,1,12,1,High Level,Yes,30,2,1,Yes,Yes,8,Yes,Yes,Yes,Yes,24
+MYS,Mysore,NSG2,18,240,145,490,11,1,11,1,High Level,Yes,20,1,1,Yes,Yes,6,Yes,Yes,Yes,Yes,18
+DVG,Davangere,NSG4,16,70,90,180,4,0,5,0,High Level,Yes,12,1,0,Yes,Yes,2,Yes,Yes,Yes,Yes,12

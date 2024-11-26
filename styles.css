@@ -1,0 +1,177 @@
+/* Main Dashboard Styles */
+.stApp {
+    background-color: #f5f7fa;
+}
+
+/* Card Styles */
+.info-card {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.info-card h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+}
+
+.info-card p {
+    margin: 0.5rem 0;
+    color: #34495e;
+}
+
+.info-card strong {
+    color: #2c3e50;
+}
+
+/* Amenity Card Styles */
+.amenity-card {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 0.8rem 0;
+    border-left: 4px solid #3498db;
+    transition: all 0.3s ease;
+}
+
+.amenity-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.amenity-card h5 {
+    color: #2c3e50;
+    margin-bottom: 0.8rem;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.amenity-card p {
+    margin: 0.5rem 0;
+    color: #34495e;
+}
+
+.amenity-card p strong {
+    color: #2c3e50;
+    margin-right: 0.5rem;
+}
+
+/* Status Indicators */
+.amenity-card p:last-child {
+    margin-top: 0.8rem;
+    font-weight: 500;
+}
+
+.amenity-card p:last-child:contains("✅") {
+    color: #27ae60;
+}
+
+.amenity-card p:last-child:contains("❌") {
+    color: #e74c3c;
+}
+
+/* Card Container Styles */
+.card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.card h4 {
+    color: #2c3e50;
+    margin-bottom: 1.2rem;
+    font-size: 1.3rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+}
+
+/* Metric Cards */
+div[data-testid="stMetric"] {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+div[data-testid="stMetric"] label {
+    color: #2c3e50;
+}
+
+/* Tabs styling */
+div[data-testid="stTabs"] {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Dataframe styling */
+div[data-testid="stDataFrame"] {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Download buttons */
+.stDownloadButton {
+    background-color: #3498db;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.stDownloadButton:hover {
+    background-color: #2980b9;
+}
+
+/* Sidebar styling */
+.css-1d391kg {
+    background-color: white;
+    border-right: 1px solid #e1e4e8;
+}
+
+/* Charts container */
+div[data-testid="stPlotlyChart"] {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Divider styling */
+hr {
+    margin: 2rem 0;
+    border: none;
+    border-top: 1px solid #e1e4e8;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .info-card, .amenity-card {
+        padding: 1rem;
+        margin: 0.5rem 0;
+    }
+    
+    .card {
+        padding: 1rem;
+    }
+}
