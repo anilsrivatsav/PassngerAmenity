@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import logging
 import streamlit as st
-from dotenv import load_dotenv
+
 
 # Configure logging
 logging.basicConfig(
@@ -11,8 +11,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Load environment variables
-load_dotenv()
+
 
 class RailwayAmenitiesChatbot:
     def __init__(self, station_csv: str = "stations.csv", works_csv: str = "works.csv"):

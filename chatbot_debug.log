@@ -1663,3 +1663,22 @@ This would allow us to see the footfalls for the SBC station. However, without a
 2025-01-04 17:21:59,120 - DEBUG - Popen(['git', 'diff', '--abbrev=40', '--full-index', '-M', '--raw', '-z', '--no-color'], cwd=/Users/anilbh/Documents/projects/Rlys/PassngerAmenity, stdin=None, shell=False, universal_newlines=False)
 2025-01-04 17:21:59,131 - DEBUG - Popen(['git', 'cat-file', '--batch-check'], cwd=/Users/anilbh/Documents/projects/Rlys/PassngerAmenity, stdin=<valid stream>, shell=False, universal_newlines=False)
 2025-01-04 17:21:59,143 - DEBUG - Popen(['git', 'rev-list', 'origin/main..main', '--'], cwd=/Users/anilbh/Documents/projects/Rlys/PassngerAmenity, stdin=None, shell=False, universal_newlines=False)
+2025-01-04 17:29:57,572 - INFO - Loading station CSV data...
+2025-01-04 17:29:57,574 - INFO - Station data loaded successfully.
+2025-01-04 17:29:57,575 - INFO - Loading works CSV data...
+2025-01-04 17:29:57,576 - INFO - Works data loaded successfully.
+2025-01-04 17:30:01,893 - INFO - Loading station CSV data...
+2025-01-04 17:30:01,897 - INFO - Station data loaded successfully.
+2025-01-04 17:30:01,900 - INFO - Loading works CSV data...
+2025-01-04 17:30:01,904 - INFO - Works data loaded successfully.
+2025-01-04 17:30:03,083 - INFO - Loading station CSV data...
+2025-01-04 17:30:03,085 - INFO - Station data loaded successfully.
+2025-01-04 17:30:03,087 - INFO - Loading works CSV data...
+2025-01-04 17:30:03,091 - INFO - Works data loaded successfully.
+2025-01-04 17:30:04,955 - DEBUG - Popen(['git', 'version'], cwd=/Users/anilbh/Documents/projects/Rlys/PassngerAmenity, stdin=None, shell=False, universal_newlines=False)
+2025-01-04 17:30:04,990 - DEBUG - Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/Users/anilbh/Documents/projects/Rlys/PassngerAmenity, stdin=None, shell=False, universal_newlines=False)
+2025-01-04 17:30:05,009 - DEBUG - Popen(['git', 'remote', 'get-url', '--all', 'origin'], cwd=/Users/anilbh/Documents/projects/Rlys/PassngerAmenity, stdin=None, shell=False, universal_newlines=False)
+2025-01-04 17:30:05,024 - DEBUG - Popen(['git', 'status', '--porcelain', '--untracked-files'], cwd=/Users/anilbh/Documents/projects/Rlys/PassngerAmenity, stdin=None, shell=False, universal_newlines=False)
+2025-01-04 17:30:05,042 - DEBUG - Popen(['git', 'diff', '--abbrev=40', '--full-index', '-M', '--raw', '-z', '--no-color'], cwd=/Users/anilbh/Documents/projects/Rlys/PassngerAmenity, stdin=None, shell=False, universal_newlines=False)
+2025-01-04 17:30:05,057 - DEBUG - Popen(['git', 'cat-file', '--batch-check'], cwd=/Users/anilbh/Documents/projects/Rlys/PassngerAmenity, stdin=<valid stream>, shell=False, universal_newlines=False)
+2025-01-04 17:30:05,071 - DEBUG - Popen(['git', 'rev-list', 'origin/main..main', '--'], cwd=/Users/anilbh/Documents/projects/Rlys/PassngerAmenity, stdin=None, shell=False, universal_newlines=False)
