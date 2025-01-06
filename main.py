@@ -237,26 +237,40 @@ def run_chatbot_app():
     try:
         chatbot = RailwayAmenitiesChatbot(station_csv, works_csv)
 
+        # Sidebar with dynamic autocomplete functionality
         st.sidebar.header("View Options")
-        page_mode = st.sidebar.radio("Select View", ["Station Details", "Works Details"])
+        page_mode = st.sidebar.radio("Select View", ["Station Details", "Works Details"], index=0)
 
         if page_mode == "Station Details":
             station_names = chatbot.get_station_names()
-            selected_station = st.sidebar.selectbox("Select a Station", station_names)
+
+            # Autocomplete search for stations
+            search_query = st.sidebar.text_input("Search Station by Name or Code")
+            filtered_stations = [
+                station for station in station_names if search_query.lower() in station.lower()
+            ]
+            selected_station = st.sidebar.selectbox(
+                "Matching Stations", filtered_stations if filtered_stations else station_names
+            )
+
             if selected_station:
                 station_details = chatbot.get_station_details(selected_station)
                 st.subheader(f"Station Details: {selected_station}")
                 render_station_card(station_details)
 
         elif page_mode == "Works Details":
-            works_filter_mode = st.sidebar.radio(
-                "Filter Works By", ["Station", "Year of Sanction", "Section"]
-            )
-            view_mode = st.radio("View Mode", ["Row View", "Card View"], index=0)  # On the right dashboard
+            works_filter_mode = st.sidebar.radio("Filter Works By", ["Station", "Year of Sanction", "Section"])
+            view_mode = st.radio("View Mode", ["Row View", "Card View"], index=0)
 
             if works_filter_mode == "Station":
                 station_names = chatbot.get_station_names()
-                selected_station = st.sidebar.selectbox("Select a Station", station_names)
+                search_query = st.sidebar.text_input("Search Station for Works")
+                filtered_stations = [
+                    station for station in station_names if search_query.lower() in station.lower()
+                ]
+                selected_station = st.sidebar.selectbox(
+                    "Matching Stations", filtered_stations if filtered_stations else station_names
+                )
                 if selected_station:
                     station_code = selected_station.split("(")[-1].strip(")")
                     works_data = chatbot.get_station_works(station_code)
@@ -268,7 +282,11 @@ def run_chatbot_app():
 
             elif works_filter_mode == "Year of Sanction":
                 years = sorted(chatbot.works_data["Year of Sanction"].dropna().unique())
-                selected_year = st.sidebar.selectbox("Select a Year", years)
+                year_query = st.sidebar.text_input("Search Year of Sanction")
+                filtered_years = [year for year in years if year_query in str(year)]
+                selected_year = st.sidebar.selectbox(
+                    "Select Year", filtered_years if filtered_years else years
+                )
                 if selected_year:
                     year_works_data = chatbot.works_data[
                         chatbot.works_data["Year of Sanction"] == selected_year
@@ -281,7 +299,13 @@ def run_chatbot_app():
 
             elif works_filter_mode == "Section":
                 sections = sorted(chatbot.works_data["Section"].dropna().unique())
-                selected_section = st.sidebar.selectbox("Select a Section", sections)
+                section_query = st.sidebar.text_input("Search Section")
+                filtered_sections = [
+                    section for section in sections if section_query.lower() in section.lower()
+                ]
+                selected_section = st.sidebar.selectbox(
+                    "Select Section", filtered_sections if filtered_sections else sections
+                )
                 if selected_section:
                     section_works_data = chatbot.works_data[
                         chatbot.works_data["Section"] == selected_section

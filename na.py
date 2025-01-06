@@ -2,7 +2,6 @@ import os
 import pandas as pd
 import logging
 import streamlit as st
-from dotenv import load_dotenv
 
 # Configure logging
 logging.basicConfig(
@@ -11,8 +10,6 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Load environment variables
-load_dotenv()
 
 class RailwayAmenitiesChatbot:
     def __init__(self, station_csv: str = "stations.csv", works_csv: str = "works.csv"):
@@ -45,13 +42,17 @@ class RailwayAmenitiesChatbot:
 
     def _normalize_works_data(self):
         """Normalize works data to handle multiple stations in the same row."""
+        self.works_data.columns = [
+            col.strip().upper().replace(" ", "_") for col in self.works_data.columns
+        ]
+        self.works_data.fillna("", inplace=True)
         expanded_rows = []
         for _, row in self.works_data.iterrows():
-            stations = str(row["Station"]).split(",")
+            stations = str(row["STATION"]).split(",")
             for station in stations:
                 station = station.strip()
                 new_row = row.copy()
-                new_row["Station"] = station
+                new_row["STATION"] = station
                 expanded_rows.append(new_row)
         self.works_data = pd.DataFrame(expanded_rows)
 
@@ -75,158 +76,94 @@ class RailwayAmenitiesChatbot:
     def get_station_works(self, station_name):
         """Retrieve works for the selected station."""
         try:
-            station_works = self.works_data[self.works_data["Station"] == station_name]
+            station_works = self.works_data[self.works_data["STATION"] == station_name]
             return station_works
         except Exception as e:
             logging.error(f"Error retrieving works for station: {e}")
             return pd.DataFrame()
 
-def render_station_table(station_data):
-    """Render station data in a table view."""
-    if station_data.empty:
-        st.warning("No station details available.")
-    else:
-        st.dataframe(station_data)
+    def filter_works(self, query=None, year=None, section=None):
+        """Filter works by query, year, or section."""
+        filtered_data = self.works_data
+        if query:
+            filtered_data = filtered_data[
+                filtered_data["SHORT_NAME_OF_WORK"].str.contains(query, case=False, na=False)
+            ]
+        if year:
+            filtered_data = filtered_data[filtered_data["YEAR_OF_SANCTION"] == year]
+        if section:
+            filtered_data = filtered_data[filtered_data["SECTION"] == section]
+        return filtered_data
 
-def render_station_card(station_details):
-    """Render station details in a modern and organized card format."""
+
+def render_station_details(station_details):
+    """Render station details."""
     st.markdown(
         f"""
-        <style>
-            .station-card {{
-                background: #FFF;
-                border: 1px solid #DDD;
-                border-radius: 15px;
-                padding: 25px;
-                margin: 20px 0;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            }}
-            .station-card:hover {{
-                transform: translateY(-5px);
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            }}
-            .station-card h3 {{
-                color: #333;
-                margin-bottom: 10px;
-                font-size: 1.8rem;
-                font-weight: 600;
-                text-align: center;
-            }}
-            .station-card .header-line {{
-                height: 4px;
-                background-color: #007BFF;
-                margin: 10px 0 20px 0;
-                border-radius: 2px;
-            }}
-            .station-info {{
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 15px;
-            }}
-            .station-info p {{
-                font-size: 1rem;
-                margin: 5px 0;
-                color: #555;
-            }}
-            .station-info b {{
-                color: #333;
-                font-weight: 600;
-            }}
-        </style>
-        <div class="station-card">
-            <h3>🚉 Station Details: {station_details['STATION_NAME']} ({station_details['STATION_CODE']}) - {station_details['CATEGORISATION']}</h3>
-            <div class="header-line"></div>
-            <div class="station-info">
-                <p><b>Earnings Range:</b> {station_details['EARNINGS_RANGE']}</p>
-                <p><b>Passenger Range:</b> {station_details['PASSENGER_RANGE']}</p>
-                <p><b>Passenger Footfall:</b> {station_details['PASSENGER_FOOTFALL']}</p>
-                <p><b>Platforms:</b> {station_details['PLATFORMS']}</p>
-                <p><b>Platform Type:</b> {station_details['PLATFORM_TYPE']}</p>
-                <p><b>Parking:</b> {station_details['PARKING']}</p>
-                <p><b>Pay-and-Use Toilets:</b> {station_details['PAY-AND-USE']}</p>
-            </div>
+        <div style='background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 20px; margin: 20px 0;'>
+            <h3 style='text-align: center;'>🚉 {station_details['STATION_NAME']} ({station_details['STATION_CODE']})</h3>
+            <p><b>Category:</b> {station_details['CATEGORISATION']}</p>
+            <p><b>Earnings Range:</b> {station_details['EARNINGS_RANGE']}</p>
+            <p><b>Passenger Range:</b> {station_details['PASSENGER_RANGE']}</p>
+            <p><b>Platforms:</b> {station_details['PLATFORMS']} ({station_details['PLATFORM_TYPE']})</p>
+            <p><b>Parking Available:</b> {station_details['PARKING']}</p>
+            <p><b>Pay-and-Use Toilets:</b> {station_details['PAY-AND-USE']}</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-def render_work_table(work_data):
-    """Render works data in a table view."""
-    if work_data.empty:
-        st.warning("No works found.")
-    else:
-        st.dataframe(work_data)
 
-def render_work_cards(work_data):
-    """Render works data in a grid layout with enhanced card styling."""
-    if work_data.empty:
-        st.warning("No works found.")
-        return
-
+def render_work_cards(works_data):
+    """Render works in a card view."""
     st.markdown(
         """
         <style>
-            .card-container {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: space-around;
+            .grid-container {{
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
                 gap: 20px;
-                margin-top: 20px;
-            }
-            .card {
-                border: 1px solid #ddd;
-                border-radius: 15px;
-                background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+                padding: 10px;
+            }}
+            .work-card {{
+                background: #FFF;
+                border: 1px solid #DDD;
+                border-radius: 10px;
                 padding: 20px;
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-                width: 30%;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
-            .card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-            }
-            .card h3 {
-                font-size: 1.5rem;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }}
+            .work-card h4 {{
+                font-size: 1.2rem;
                 color: #333;
-                margin-bottom: 10px;
-                text-align: center;
-                border-bottom: 2px solid #007BFF;
-                padding-bottom: 5px;
-            }
-            .card p {
+            }}
+            .work-card p {{
                 font-size: 1rem;
+                margin: 5px 0;
                 color: #555;
-                margin: 8px 0;
-            }
-            .card p b {
-                color: #007BFF;
-            }
+            }}
         </style>
+        <div class="grid-container">
         """,
         unsafe_allow_html=True,
     )
-
-    st.markdown('<div class="card-container">', unsafe_allow_html=True)
-    for _, row in work_data.iterrows():
+    for _, row in works_data.iterrows():
         st.markdown(
             f"""
-            <div class="card">
-                <h3>{row.get('Short Name of Work', 'No Title')}</h3>
-                <p><b>📅 Year of Sanction:</b> {row.get('Year of Sanction', 'N/A')}</p>
-                <p><b>💰 Current Cost:</b> {row.get('Current Cost', 'N/A')}</p>
-                <p><b>📊 Financial Progress:</b> {row.get('Financial Progress', 'N/A')}</p>
-                <p><b>📝 Remarks:</b> {row.get('Remarks as on 14/06/24', 'N/A')}</p>
+            <div class="work-card">
+                <h4>🛠 {row.get('SHORT_NAME_OF_WORK', 'N/A')}</h4>
+                <p><b>Project ID:</b> {row.get('PROJECTID', 'N/A')}</p>
+                <p><b>Current Cost:</b> {row.get('CURRENT_COST', 'N/A')}</p>
+                <p><b>Remarks:</b> {row.get('REMARKS', 'N/A')}</p>
             </div>
             """,
             unsafe_allow_html=True,
         )
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+
 
 def run_chatbot_app():
     st.set_page_config(page_title="Amenities Dashboard", layout="wide")
-    st.title("🚉 Amenities Dashboard")
-    st.markdown("Find detailed information about railway stations and their associated works.")
+    st.title("🚉 Railway Amenities Dashboard")
 
     station_csv = "stations.csv"
     works_csv = "works.csv"
@@ -238,60 +175,37 @@ def run_chatbot_app():
     try:
         chatbot = RailwayAmenitiesChatbot(station_csv, works_csv)
 
-        st.sidebar.header("View Options")
-        page_mode = st.sidebar.radio("Select View", ["Station Details", "Works Details"])
+        # Tabs for Station-Based and Works-Based Views
+        tab1, tab2 = st.tabs(["🔍 Station-Based View", "🛠 Works-Based View"])
 
-        if page_mode == "Station Details":
+        # Station-Based View
+        with tab1:
+            search_query = st.text_input("Search Station by Name or Code")
             station_names = chatbot.get_station_names()
-            selected_station = st.sidebar.selectbox("Select a Station", station_names)
+            matching_stations = [name for name in station_names if search_query.lower() in name.lower()]
+            selected_station = st.selectbox("Matching Stations", matching_stations)
+
             if selected_station:
                 station_details = chatbot.get_station_details(selected_station)
-                st.subheader(f"Station Details: {selected_station}")
-                render_station_card(station_details)
+                if station_details:
+                    render_station_details(station_details)
 
-        elif page_mode == "Works Details":
-            works_filter_mode = st.sidebar.radio(
-                "Filter Works By", ["Station", "Year of Sanction", "Section"]
-            )
-            view_mode = st.radio("View Mode", ["Row View", "Card View"], index=0)  # On the right dashboard
+                works_data = chatbot.get_station_works(selected_station.split("(")[-1].strip(")"))
+                st.subheader("Works")
+                if st.checkbox("View as Cards"):
+                    render_work_cards(works_data)
+                else:
+                    st.dataframe(works_data)
 
-            if works_filter_mode == "Station":
-                station_names = chatbot.get_station_names()
-                selected_station = st.sidebar.selectbox("Select a Station", station_names)
-                if selected_station:
-                    station_code = selected_station.split("(")[-1].strip(")")
-                    works_data = chatbot.get_station_works(station_code)
-                    st.subheader(f"Works for Station: {selected_station}")
-                    if view_mode == "Row View":
-                        render_work_table(works_data)
-                    elif view_mode == "Card View":
-                        render_work_cards(works_data)
-
-            elif works_filter_mode == "Year of Sanction":
-                years = sorted(chatbot.works_data["Year of Sanction"].dropna().unique())
-                selected_year = st.sidebar.selectbox("Select a Year", years)
-                if selected_year:
-                    year_works_data = chatbot.works_data[
-                        chatbot.works_data["Year of Sanction"] == selected_year
-                    ]
-                    st.subheader(f"Works Sanctioned in {selected_year}")
-                    if view_mode == "Row View":
-                        render_work_table(year_works_data)
-                    elif view_mode == "Card View":
-                        render_work_cards(year_works_data)
-
-            elif works_filter_mode == "Section":
-                sections = sorted(chatbot.works_data["Section"].dropna().unique())
-                selected_section = st.sidebar.selectbox("Select a Section", sections)
-                if selected_section:
-                    section_works_data = chatbot.works_data[
-                        chatbot.works_data["Section"] == selected_section
-                    ]
-                    st.subheader(f"Works for Section: {selected_section}")
-                    if view_mode == "Row View":
-                        render_work_table(section_works_data)
-                    elif view_mode == "Card View":
-                        render_work_cards(section_works_data)
+        # Works-Based View
+        with tab2:
+            st.subheader("All Works")
+            filter_query = st.text_input("Search by Short Name of Work, Section, or Year")
+            filtered_works = chatbot.filter_works(query=filter_query)
+            if st.checkbox("View as Cards"):
+                render_work_cards(filtered_works)
+            else:
+                st.dataframe(filtered_works)
 
     except Exception as e:
         logging.error(f"Error running chatbot app: {e}")
